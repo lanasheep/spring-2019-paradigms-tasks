@@ -176,8 +176,8 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let pool = ThreadPool::new(N_THREADS);
 
     let (tx, rx) = std::sync::mpsc::channel();
-    tx.send(find_solution(&mut f)).unwrap();
-    rx.recv().unwrap()
+    pool.execute(move || tx.send(find_solution(&mut f)).unwrap());
+    rx.into_iter().find_map(|option| option)
 }
 
 /// Юнит-тест, проверяющий, что `find_solution()` находит лексикографически минимальное решение на пустом поле.
