@@ -191,7 +191,7 @@ fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: &Sender<Option<Field>>, dep
 /// в противном случае возвращает `None`.
 fn find_solution_parallel(mut f: Field) -> Option<Field> {
     const N_THREADS: usize = 8;
-    const SPAWN_DEPTH: i32 = 1;
+    const SPAWN_DEPTH: i32 = 2;
 
     let pool = ThreadPool::new(N_THREADS);
     let (tx, rx) = channel();
