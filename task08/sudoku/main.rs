@@ -181,7 +181,7 @@ fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: &Sender<Option<Field>>, dep
             |f| {
                 spawn_tasks(f, pool, tx, depth - 1);
                 None
-            }
+            },
         );
     }
 }
