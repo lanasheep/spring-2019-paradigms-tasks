@@ -176,7 +176,20 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let pool = ThreadPool::new(N_THREADS);
 
     let (tx, rx) = std::sync::mpsc::channel();
-    pool.execute(move || tx.send(find_solution(&mut f)).unwrap());
+    try_extend_field(
+        &mut f,
+        |f| {
+            let tx = tx.clone();
+            tx.send(Some(f.clone())).unwrap_or(());
+        },
+        |f| {
+            let tx = tx.clone();
+            let mut f = f.clone();
+            pool.execute(move || tx.send(find_solution(&mut f)).unwrap_or(()));
+            None
+        }
+    );
+
     rx.into_iter().find_map(|option| option)
 }
 
