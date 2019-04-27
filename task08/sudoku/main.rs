@@ -13,6 +13,7 @@ mod field;
 // Чтобы не писать `field::Cell:Empty`, можно "заимпортировать" нужные вещи из модуля.
 use field::Cell::*;
 use field::{parse_field, Field, N};
+use std::sync::mpsc::*;
 use threadpool::*;
 
 /// Эта функция выполняет один шаг перебора в поисках решения головоломки.
@@ -168,16 +169,9 @@ fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
 
-/// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
-/// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
-/// в противном случае возвращает `None`.
-fn find_solution_parallel(mut f: Field) -> Option<Field> {
-    const N_THREADS: usize = 8;
-    let pool = ThreadPool::new(N_THREADS);
-
-    let (tx, rx) = std::sync::mpsc::channel();
+fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: &Sender<Option<Field>>){
     try_extend_field(
-        &mut f,
+        f,
         |f| {
             let tx = tx.clone();
             tx.send(Some(f.clone())).unwrap_or(());
@@ -189,6 +183,17 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
             None
         }
     );
+}
+
+/// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
+/// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
+/// в противном случае возвращает `None`.
+fn find_solution_parallel(mut f: Field) -> Option<Field> {
+    const N_THREADS: usize = 8;
+    let pool = ThreadPool::new(N_THREADS);
+
+    let (tx, rx) = channel();
+    spawn_tasks(&mut f, &pool, &tx);
 
     rx.into_iter().find_map(|option| option)
 }
