@@ -46,10 +46,8 @@ TEST_CASE("ThreadsafeQueue multithreaded ping-pong") {
         for (int i = 0; i < PING_PONGS; i++) {
             int data_last = data;
             threadsafe_queue_push(&qs[0], &data);
-            int *data_ptr =
-                static_cast<int *>(threadsafe_queue_wait_and_pop(&qs[1]));
-            CHECK(data_ptr == &data);
-            CHECK(*data_ptr == data_last + 1);
+            CHECK(threadsafe_queue_wait_and_pop(&qs[1]) == &data);
+            CHECK(data == data_last + 1);
         }
 
         return nullptr;
