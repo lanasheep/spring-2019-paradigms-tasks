@@ -61,8 +61,8 @@ testsBasics = testGroup "Unit tests for Basics tasks"
     , testCase "foldl'' can be used for finding multiplication of elements" $
         foldl'' (*) 1 [1,2,3] @?= 6
 
-    , testCase "foldl'' can be used for finding exponentiation of element" $
-        foldl'' (**) 2 [3,2,1] @?= 64
+    , testCase "foldl'' can be used for finding result of non-associative function" $
+        foldl'' (\a b -> a - b + 1) 1 [2,3,4] @?= -5
 
 
     , testCase "concat' works on finite lists as expected" $
