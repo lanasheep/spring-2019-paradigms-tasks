@@ -35,13 +35,13 @@ getHealth (_, _, myHealth) = myHealth
 -- состояние робота
 
 setName :: Name -> Robot -> Robot
-setName myName (_, attack, health) = (myName, attack, health)
+setName myName (_, attack, health) = robot myName attack health
 
 setAttack :: Attack -> Robot -> Robot
-setAttack myAttack (name, _, health) = (name, myAttack, health)
+setAttack myAttack (name, _, health) = robot name myAttack health
 
 setHealth :: Health -> Robot -> Robot
-setHealth myHealth (name, attack, _) = (name, attack, myHealth)
+setHealth myHealth (name, attack, _) = robot name attack myHealth
 
 -- Шаг 2.
 -- Напишите функцию, которая ведет себя как __str__
@@ -65,7 +65,7 @@ damage victim amount = let
 -- Вам понадобится вспомогательная функция isAlive, которая бы проверяла, жив робот или не очень
 -- Робот считается живым, если его уровень здоровья строго больше нуля.
 isAlive :: Robot -> Bool
-isAlive robot_ = (getHealth robot_) > 0
+isAlive r = (getHealth r) > 0
 
 -- Затем, используя функцию damage, напишите функцию, которая моделирует один раунд схватки между
 -- двумя роботами
