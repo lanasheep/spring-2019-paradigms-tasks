@@ -9,7 +9,7 @@ main = defaultMain testsRobots
 testsRobots :: TestTree
 testsRobots = let
         walter = robot "Walter" 50 70
-        dead_robot = robot "_" 1 0
+        deadRobot = robot "_" 1 0
         opponent = robot "Opponent" 20 80
     in testGroup "Unit tests for Robots task"
         [ testCase "Test for robot constructor" $
@@ -36,12 +36,12 @@ testsRobots = let
             damage walter 30 @?= ("Walter", 50, 40)
 
         , testCase "Test for isAlive for dead robot" $
-            isAlive dead_robot @?= False
+            isAlive deadRobot @?= False
         , testCase "Test for isAlive for alive robot" $
             isAlive walter @?= True
 
         , testCase "Test for fight with dead robot" $
-            fight dead_robot walter @?= walter
+            fight deadRobot walter @?= walter
         , testCase "Test for fight with alive robot" $
             fight opponent walter @?= ("Walter", 50, 50)
 
