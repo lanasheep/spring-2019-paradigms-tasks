@@ -30,9 +30,10 @@ drop' n (_:xs) = drop' (n - 1) xs
 
 -- 5. filter' возвращает список из элементов, для которых f возвращает True
 filter' :: (a -> Bool) -> [a] -> [a]
-filter' _ []     = []
-filter' f (x:xs) | f x       = x : filter' f xs
-                 | otherwise = filter' f xs
+filter' _ []    = []
+filter' f (x:xs)
+    | f x       = x : filter' f xs
+    | otherwise = filter' f xs
 
 -- 6. foldl'' последовательно применяет функцию f к элементу списка l и значению,
 -- полученному на предыдущем шаге, начальное значение
@@ -53,6 +54,7 @@ concat' (x:xs) ys = x : concat' xs ys
 -- (выбор pivot может быть любым)
 quickSort' :: Ord a => [a] -> [a]
 quickSort' []     = []
-quickSort' (x:xs) = concat' left right where
-    left  = quickSort' (filter' (<x) xs)
-    right = x : quickSort' (filter' (>=x) xs)
+quickSort' (x:xs) = concat' left right 
+    where
+        left  = quickSort' (filter' (<x) xs)
+        right = x : quickSort' (filter' (>=x) xs)
