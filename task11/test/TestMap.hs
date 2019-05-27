@@ -129,6 +129,23 @@ mapTests name (_ :: Proxy m) =
                 toAscList (updateWithKey f 1 map) @?= [(2, "c"), (9, "z")]
         ],
 
+        testGroup "alter tests" [
+            testCase "insert element" $
+                let f _ = Just "b" in
+                let map = fromList [(1, "a"), (3, "c")] :: m Int String in
+                toAscList (alter f 2 map) @?= [(1, "a"), (2, "b"), (3, "c")]
+            ,
+            testCase "delete element" $
+                let f _ = Nothing in
+                let map = fromList [(1, "a"), (2, "b"), (3, "c")] :: m Int String in
+                toAscList (alter f 2 map) @?= [(1, "a"), (3, "c")]
+            ,
+            testCase "update element" $
+                let f _ = Just "t" in
+                let map = fromList [(2, "c"), (9, "z")] :: m Int String in
+                toAscList (alter f 9 map) @?= [(2, "c"), (9, "t")]
+        ],
+
         let map = fromList [(1, 10), (2, 20)] :: m Int Int in
         testGroup "member tests" [
             testCase "existing key" $
