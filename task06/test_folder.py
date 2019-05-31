@@ -9,38 +9,38 @@ def test_nothing():
 
 def test_bin_num_num():
     program = fold_constants(BinaryOperation(Number(5), "%", Number(3)))
-    program_correct = Number(2)
+    correct_program = Number(2)
 
-    assert program == program_correct
+    assert program == correct_program
 
 
 def test_bin_num_ref():
     program = fold_constants(BinaryOperation(Number(0), "*", Reference("x")))
-    program_correct = Number(0)
+    correct_program = Number(0)
 
-    assert program == program_correct
+    assert program == correct_program
 
 
 def test_bin_ref_num():
     program = fold_constants(BinaryOperation(Reference("x"), "*", Number(0)))
-    program_correct = Number(0)
+    correct_program = Number(0)
 
-    assert program == program_correct
+    assert program == correct_program
 
 
 def test_bin_ref_ref():
     program = fold_constants(BinaryOperation(Reference("a"), "-",
                                              Reference("a")))
-    program_correct = Number(0)
+    correct_program = Number(0)
 
-    assert program == program_correct
+    assert program == correct_program
 
 
 def test_un_num():
     program = fold_constants(UnaryOperation("-", Number(300)))
-    program_correct = Number(-300)
+    correct_program = Number(-300)
 
-    assert program == program_correct
+    assert program == correct_program
 
 
 def test_folder():

@@ -105,6 +105,9 @@ class Number(ASTNode):
         return visitor.visit_number(self)
 
 
+ZERO = Number(0)
+
+
 class Function(ASTNode):
     """
     Представляет собой константу или значение типа "функция".
@@ -171,13 +174,10 @@ class Conditional(ASTNode):
         self.if_false = if_false
 
     def evaluate(self, scope):
-        number = self.condition.evaluate(scope)
-        if number.value:
-            expressions = self.if_true
-        else:
-            expressions = self.if_false
+        condition_res = self.condition.evaluate(scope)
+        expressions = self.if_true if condition_res.value else self.if_false
 
-        result = None
+        result = ZERO
         for expr in expressions or []:
             result = expr.evaluate(scope)
 
@@ -264,7 +264,7 @@ class FunctionCall(ASTNode):
     """
     def __init__(self, fun_expr, args):
         self.fun_expr = fun_expr
-        self.args = args
+        self.args = args or []
 
     def evaluate(self, scope):
         function = self.fun_expr.evaluate(scope)
@@ -273,7 +273,7 @@ class FunctionCall(ASTNode):
         for name, arg in zip(function.args, self.args):
             call_scope[name] = arg.evaluate(scope)
 
-        result = None
+        result = ZERO
         for expr in function.body:
             result = expr.evaluate(call_scope)
 
@@ -336,7 +336,7 @@ class BinaryOperation(ASTNode):
         elif self.op == '*':
             result = result_left * result_right
         elif self.op == '/':
-            result = result_left / result_right
+            result = result_left // result_right
         elif self.op == '%':
             result = result_left % result_right
         elif self.op == '==':
@@ -356,7 +356,7 @@ class BinaryOperation(ASTNode):
         elif self.op == '||':
             result = result_left or result_right
 
-        return Number(result)
+        return Number(int(result))
 
     def accept(self, visitor):
         return visitor.visit_binary_operation(self)
@@ -384,7 +384,7 @@ class UnaryOperation(ASTNode):
         else:
             result = not result
 
-        return Number(result)
+        return Number(int(result))
 
     def accept(self, visitor):
         return visitor.visit_unary_operation(self)

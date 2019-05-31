@@ -9,9 +9,12 @@ class PrettyPrinter(model.ASTNodeVisitor):
         self.result = ""
         self.depth = 0
 
-    def get_result(self):
+    def check_ending(self):
         if not self.result.endswith("}"):
             self.result += ";"
+
+    def get_result(self):
+        self.check_ending()
         return self.result
 
     def print_tab(self):
@@ -32,8 +35,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         for command in function_definition.function.body:
             self.print_tab()
             command.accept(self)
-            if not self.result.endswith("}"):
-                self.result += ";"
+            self.check_ending()
             self.result += "\n"
         self.depth -= 1
         self.result += "}"
@@ -47,8 +49,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
             for expr in conditional.if_true:
                 self.print_tab()
                 expr.accept(self)
-                if not self.result.endswith("}"):
-                    self.result += ";"
+                self.check_ending()
                 self.result += "\n"
         self.depth -= 1
         self.print_tab()
@@ -60,8 +61,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         for expr in conditional.if_false:
             self.print_tab()
             expr.accept(self)
-            if not self.result.endswith("}"):
-                self.result += ";"
+            self.check_ending()
             self.result += "\n"
         self.depth -= 1
         self.print_tab()
