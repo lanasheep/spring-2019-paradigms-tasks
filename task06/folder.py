@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from model import *
 
 ZERO = Number(0)
@@ -9,7 +8,7 @@ class ConstantFolder(ASTNodeVisitor):
         return number
 
     def visit_function(self, function):
-        body_new = [expr.accept(self) for expr in function.body] or []
+        body_new = [expr.accept(self) for expr in function.body or []]
         return Function(function.args, body_new)
 
     def visit_function_definition(self, function_definition):
@@ -18,8 +17,10 @@ class ConstantFolder(ASTNodeVisitor):
 
     def visit_conditional(self, conditional):
         condition_new = conditional.condition.accept(self)
-        if_true_new = [expr.accept(self) for expr in conditional.if_true] or []
-        if_false_new = [expr.accept(self) for expr in conditional.if_false] or []
+        if_true_new = [expr.accept(self)
+                       for expr in conditional.if_true or []]
+        if_false_new = [expr.accept(self)
+                        for expr in conditional.if_false or []]
         return Conditional(condition_new, if_true_new, if_false_new)
 
     def visit_print(self, print_):
@@ -30,7 +31,7 @@ class ConstantFolder(ASTNodeVisitor):
 
     def visit_function_call(self, function_call):
         fun_expr_new = function_call.fun_expr.accept(self)
-        args_new = [arg.accept(self) for arg in function_call.args] or []
+        args_new = [arg.accept(self) for arg in function_call.args or []]
         return FunctionCall(fun_expr_new, args_new)
 
     def visit_reference(self, reference):

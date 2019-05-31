@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import model
 
 TAB = "    "
@@ -27,7 +26,6 @@ class PrettyPrinter(model.ASTNodeVisitor):
         pass
 
     def visit_function_definition(self, function_definition):
-        self.print_tab()
         self.result += "def " + function_definition.name + "("
         self.result += ", ".join(function_definition.function.args)
         self.result += ") {\n"
@@ -38,6 +36,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
             self.check_ending()
             self.result += "\n"
         self.depth -= 1
+        self.print_tab()
         self.result += "}"
 
     def visit_conditional(self, conditional):
@@ -96,7 +95,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         self.result += ")"
 
     def visit_unary_operation(self, unary_operation):
-        self.result += "(" + unary_operation.op
+        self.result += unary_operation.op + "("
         unary_operation.expr.accept(self)
         self.result += ")"
 

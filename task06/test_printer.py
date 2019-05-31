@@ -70,7 +70,7 @@ def test_binary_operation():
 def test_unary_operation():
     printer = PrettyPrinter()
     (UnaryOperation('-', UnaryOperation('-', Number(42)))).accept(printer)
-    result_correct = "(-(-42));"
+    result_correct = "-(-(42));"
     assert printer.get_result() == result_correct
 
 
@@ -100,7 +100,7 @@ def main(arg1) {
         if (1) {
         }
     } else {
-        exit((-arg1));
+        exit(-(arg1));
     }
 }
 """
